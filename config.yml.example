@@ -1,0 +1,26 @@
+# MongoDB connection information
+database:
+  host: "127.0.0.1"
+  port: 27017
+  user: ""
+  password: ""
+  db: "talleo_telegram_bot"
+
+# Telegram Bot user name and token
+telegram:
+  username: "TalleoTipBot"
+  token: ""
+
+# walletd connection information
+wallet:
+  host: "127.0.0.1"
+  port: "33777"
+  password: ""
+
+# TLO is 2-digit, 100
+tx_fee: 1
+min_tx_amount: 100
+max_tx_amount: 30000000000
+
+# How many seconds between balance refresh with walletd
+wallet_balance_update_interval: 30

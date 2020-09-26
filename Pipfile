@@ -1,0 +1,27 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+
+[requires]
+
+python_version = "3.6"
+
+
+[packages]
+
+requests = "*"
+"python-telegram-bot" = "*"
+mongoengine = "*"
+pyyaml = "*"
+munch = "*"
+click = "*"
+importlib-metadata = "<2,>=0.12"
+
+[dev-packages]
+
+"flake8" = "*"
+yapf = "*"
+pytest = "*"
+pytest-cov = "*"
