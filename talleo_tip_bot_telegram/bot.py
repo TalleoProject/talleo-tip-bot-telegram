@@ -3,6 +3,7 @@ import mongoengine
 
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext, JobQueue
+from telegram.ext import PrefixHandler
 
 from talleo_tip_bot_telegram import models, store
 from talleo_tip_bot_telegram.config import config
@@ -348,6 +349,9 @@ def main():
 
     tip_handler = CommandHandler('tip', tip)
     dispatcher.add_handler(tip_handler)
+
+    tip_prefix_handler = PrefixHandler('!', 'tip', tip)
+    dispatcher.add_handler(tip_prefix_handler)
 
     outputs_handler = CommandHandler('outputs', outputs)
     dispatcher.add_handler(outputs_handler)
