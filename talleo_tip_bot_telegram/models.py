@@ -22,6 +22,14 @@ class Wallet(Document):
     locked_balance = LongField(default=0)
 
 
+class Transfer(Document):
+    from_user = ReferenceField(User, required=True)
+    to_user = ReferenceField(Wallet, required=True)
+    amount = LongField(required=True)
+    date = DateTimeField(required=True)
+    tx_hash = StringField()
+
+
 class Tip(Document):
     from_user = ReferenceField(User, required=True)
     to_user = ReferenceField(User, required=True)

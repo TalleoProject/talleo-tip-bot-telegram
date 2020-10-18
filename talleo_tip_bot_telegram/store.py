@@ -28,6 +28,20 @@ def get_user_wallet(user_id: str) -> models.Wallet:
     return user_wallet
 
 
+def send(user_from: models.User, user_to: models.Wallet,
+         amount: int) -> models.Transfer:
+    transfer = models.Transfer(from_user=user_from, to_user=user_to,
+                               amount=amount, date=datetime.utcnow())
+
+    tx_hash = wallet.send_transaction(user_from.balance_wallet_address,
+                                      user_to.wallet_address, amount)
+
+    transfer.tx_hash = tx_hash
+    transfer.save()
+
+    return transfer
+
+
 def send_tip(user_from: models.User, user_to: models.User,
              amount: int) -> models.Tip:
     tip = models.Tip(from_user=user_from, to_user=user_to, amount=amount,

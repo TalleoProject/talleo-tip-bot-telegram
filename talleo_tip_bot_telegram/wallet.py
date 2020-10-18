@@ -49,6 +49,11 @@ def get_wallet_balance(address: str) -> Dict[str, int]:
 def get_all_balances(wallet_addresses: List[str]) -> Dict[str, Dict]:
     wallets = {}
     for address in wallet_addresses:
-        wallet = rpc_client.call_method('getBalance', {'address': address})
-        wallets[address] = wallet
+        try:
+            wallet = rpc_client.call_method('getBalance', {'address': address})
+            wallets[address] = wallet
+        except rpc_client.RPCException:
+            print(
+                f"Can't get balance of wallet {address}, it might be external."
+            )
     return wallets

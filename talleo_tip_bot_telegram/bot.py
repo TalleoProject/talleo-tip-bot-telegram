@@ -1,6 +1,8 @@
 import click
 import mongoengine
 
+from mongoengine.errors import ValidationError
+
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext, JobQueue
 from telegram.ext import PrefixHandler
@@ -16,6 +18,7 @@ bot_help_register = "Register or change your withdrawal address."
 bot_help_info = "Get your account's info."
 bot_help_withdraw = f"Withdraw {TALLEO_REPR} from your balance."
 bot_help_balance = f"Check your {TALLEO_REPR} balance."
+bot_help_transfer = f"Send {TALLEO_REPR} to external wallet from your balance."
 bot_help_tip = f"Give {TALLEO_REPR} to a user from your balance."
 bot_help_optimize = "Optimize wallet."
 bot_help_outputs = "Get number of optimizable and unspent outputs."
@@ -33,6 +36,7 @@ def commands(update: Update, context: CallbackContext):
         f'/info - {bot_help_info}\n'
         f'/withdraw <amount> - {bot_help_withdraw}\n'
         f'/balance - {bot_help_balance}\n'
+        f'/transfer <wallet> <amount> - {bot_help_transfer}\n'
         f'/tip @user <amount> - {bot_help_tip}\n'
         f'/optimize - {bot_help_optimize}\n'
         f'/outputs - {bot_help_outputs}')
@@ -105,8 +109,13 @@ def register(update: Update, context: CallbackContext):
             user_id=username).first()
         if existing_user:
             prev_address = existing_user.user_wallet_address
-            existing_user = store.register_user(existing_user.user_id,
-                                                user_wallet=wallet_address)
+            try:
+                existing_user = store.register_user(existing_user.user_id,
+                                                    user_wallet=wallet_address)
+            except ValidationError:
+                context.bot.send_message(chat_id=update.message.chat_id,
+                                         text='Invalid wallet address!')
+                return
             if prev_address:
                 context.bot.send_message(
                     chat_id=update.message.chat_id,
@@ -115,8 +124,13 @@ def register(update: Update, context: CallbackContext):
                     f'{existing_user.user_wallet_address}')
                 return
 
-        user = (existing_user or
-                store.register_user(username, user_wallet=wallet_address))
+        try:
+            user = (existing_user or
+                    store.register_user(username, user_wallet=wallet_address))
+        except ValidationError:
+            context.bot.send_message(chat_id=update.message.chat_id,
+                                     text='Invalid wallet address!')
+            return
 
         context.bot.send_message(
             chat_id=update.message.chat_id, text='You have been registered.\n'
@@ -183,6 +197,64 @@ def withdraw(update: Update, context: CallbackContext):
             text=f'You have withdrawn {real_amount / TALLEO_DIGITS:.2f} '
             f'{TALLEO_REPR}.\n'
             f'Transaction hash: {withdrawal.tx_hash}')
+
+
+def transfer(update: Update, context: CallbackContext):
+    username = update.message.from_user.username
+    recipient = context.args[0]
+    amount = float(context.args[1])
+    if username is None:
+        context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text='Please set a Telegram username in your profile settings!')
+    else:
+        user_from: models.User = models.User.objects(user_id=username).first()
+        user_to: models.Wallet = models.Wallet.objects(
+            wallet_address=recipient).first()
+        if user_to is None:
+            try:
+                user_to = models.Wallet(wallet_address=recipient)
+                user_to.save()
+            except ValidationError:
+                context.bot.send_message(chat_id=update.message.chat_id,
+                                         text='Invalid wallet address!')
+                return
+
+        real_amount = int(amount * TALLEO_DIGITS)
+        user_from_wallet: models.Wallet = models.Wallet.objects(
+            wallet_address=user_from.balance_wallet_address).first()
+
+        if real_amount + config.tx_fee >= user_from_wallet.actual_balance:
+            context.bot.send_message(
+                chat_id=update.message.chat_id,
+                text=f'Insufficient balance to send transfer of '
+                f'{real_amount / TALLEO_DIGITS:.2f} '
+                f'{TALLEO_REPR} to @{recipient}.')
+            return
+
+        if real_amount > config.max_tx_amount:
+            context.bot.send_message(
+                chat_id=update.message.chat_id,
+                text=f'Transactions cannot be bigger than '
+                f'{config.max_tx_amount / TALLEO_DIGITS:.2f} '
+                f'{TALLEO_REPR}.')
+            return
+        elif real_amount < config.min_tx_amount:
+            context.bot.send_message(
+                chat_id=update.message.chat_id,
+                text=f'Transactions cannot be smaller than '
+                f'{config.min_tx_amount / TALLEO_DIGITS:.2f} '
+                f'{TALLEO_REPR}.')
+            return
+
+        transfer = store.send(user_from, user_to, real_amount)
+
+        context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text=f'Transfer of {real_amount / TALLEO_DIGITS:.2f} '
+            f'{TALLEO_REPR} '
+            f'was sent to {recipient}\n'
+            f'Transaction hash: {transfer.tx_hash}')
 
 
 def tip(update: Update, context: CallbackContext):
@@ -346,6 +418,12 @@ def main():
 
     withdraw_handler = CommandHandler('withdraw', withdraw)
     dispatcher.add_handler(withdraw_handler)
+
+    transfer_handler = CommandHandler('transfer', transfer)
+    dispatcher.add_handler(transfer_handler)
+
+    transfer_prefix_handler = PrefixHandler('!', 'transfer', transfer)
+    dispatcher.add_handler(transfer_prefix_handler)
 
     tip_handler = CommandHandler('tip', tip)
     dispatcher.add_handler(tip_handler)
