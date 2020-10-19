@@ -12,6 +12,7 @@ from talleo_tip_bot_telegram.config import config
 
 TALLEO_DIGITS = 100
 TALLEO_REPR = 'TLO'
+COMMAND_PREFIX = '!'
 
 bot_description = f"Tip {TALLEO_REPR} to other users on your server."
 bot_help_register = "Register or change your withdrawal address."
@@ -416,19 +417,23 @@ def main():
     balance_handler = CommandHandler('balance', balance)
     dispatcher.add_handler(balance_handler)
 
+    balance_prefix_handler = PrefixHandler(COMMAND_PREFIX, 'balance', balance)
+    dispatcher.add_handler(balance_prefix_handler)
+
     withdraw_handler = CommandHandler('withdraw', withdraw)
     dispatcher.add_handler(withdraw_handler)
 
     transfer_handler = CommandHandler('transfer', transfer)
     dispatcher.add_handler(transfer_handler)
 
-    transfer_prefix_handler = PrefixHandler('!', 'transfer', transfer)
+    transfer_prefix_handler = PrefixHandler(COMMAND_PREFIX, 'transfer',
+                                            transfer)
     dispatcher.add_handler(transfer_prefix_handler)
 
     tip_handler = CommandHandler('tip', tip)
     dispatcher.add_handler(tip_handler)
 
-    tip_prefix_handler = PrefixHandler('!', 'tip', tip)
+    tip_prefix_handler = PrefixHandler(COMMAND_PREFIX, 'tip', tip)
     dispatcher.add_handler(tip_prefix_handler)
 
     outputs_handler = CommandHandler('outputs', outputs)
