@@ -9,6 +9,11 @@ def register() -> str:
     return result['address']
 
 
+def get_addresses() -> List[str]:
+    result = rpc_client.call_method('getAddresses')
+    return result['addresses']
+
+
 def send_transaction(from_address: str, to_address: str, amount: int) -> str:
     payload = {
         'addresses': [from_address],
@@ -48,12 +53,15 @@ def get_wallet_balance(address: str) -> Dict[str, int]:
 
 def get_all_balances(wallet_addresses: List[str]) -> Dict[str, Dict]:
     wallets = {}
+    local_addresses = get_addresses()
     for address in wallet_addresses:
-        try:
-            wallet = rpc_client.call_method('getBalance', {'address': address})
-            wallets[address] = wallet
-        except rpc_client.RPCException:
-            print(
-                f"Can't get balance of wallet {address}, it might be external."
-            )
+        if address in local_addresses:
+            try:
+                wallet = rpc_client.call_method('getBalance',
+                                                {'address': address})
+                wallets[address] = wallet
+            except rpc_client.RPCException:
+                print(f"Can't get balance of wallet {address}.")
+        else:
+            print(f"Skipping address {address}, it's not local.")
     return wallets
