@@ -29,20 +29,14 @@ def send_transaction(from_address: str, to_address: str, amount: int) -> str:
 
 
 def estimate_fusion(address: str, threshold: int) -> Dict[str, Dict]:
-    outputs = {}
     payload = {'addresses': [address], 'threshold': threshold}
     result = rpc_client.call_method('estimateFusion', payload=payload)
-
-    outputs['fusion_ready_count'] = result['fusionReadyCount']
-    outputs['total_count'] = result['totalOutputCount']
-
-    return outputs
+    return result
 
 
 def send_fusion(address: str, threshold: int) -> str:
     payload = {'addresses': [address], 'threshold': threshold}
     result = rpc_client.call_method('sendFusion', payload=payload)
-
     return result['transactionHash']
 
 

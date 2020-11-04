@@ -75,8 +75,8 @@ def estimate_fusion(user: models.User,
 
     outputs = wallet.estimate_fusion(user.balance_wallet_address, threshold)
 
-    fusion.fusion_ready_count = outputs['fusion_ready_count']
-    fusion.total_count = outputs['total_count']
+    fusion.fusion_ready_count = outputs['fusionReadyCount']
+    fusion.total_count = outputs['totalOutputCount']
     fusion.save()
 
     return fusion
