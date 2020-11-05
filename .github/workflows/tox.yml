@@ -7,12 +7,22 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        name: [
-          Ubuntu 18.04
-        ]
         include:
-          - name: Ubuntu 18.04
+          - name: Ubuntu 18.04 - Python 3.6
             os: ubuntu-18.04
+            python-minor: 6
+
+          - name: Ubuntu 18.04 - Python 3.7
+            os: ubuntu-18.04
+            python-minor: 7
+
+          - name: Ubuntu 20.04 - Python 3.8
+            os: ubuntu-20.04
+            python-minor: 8
+
+          - name: Ubuntu 20.04 - Python 3.9
+            os: ubuntu-20.04
+            python-minor: 9
 
     steps:
     - name: Checkout repository
@@ -21,11 +31,11 @@ jobs:
     - name: Install packages
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3.6 python3.6-minimal python3-pip tox
+        sudo apt-get install -y python3.${{ matrix.python-minor }} python3.${{ matrix.python-minor }}-minimal python3.${{ matrix.python-minor }}-dev python3-pip tox
 
     - name: Setup Python environment
       run: |
          python3 -m pip install --upgrade pip
 
     - name: Run tox
-      run: tox
+      run: tox -e py3${{ matrix.python-minor }}
