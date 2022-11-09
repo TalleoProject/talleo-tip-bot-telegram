@@ -14,7 +14,7 @@ def load_config():
     sys.argv = sys.argv[:1] + left
     print("Loading configuration file {}".format(args.config))
     with open(args.config) as config_file:
-        _config = yaml.load(config_file)
+        _config = yaml.load(config_file, Loader=yaml.Loader)
         globals()['config'] = Munch.fromDict(_config)
 
 
