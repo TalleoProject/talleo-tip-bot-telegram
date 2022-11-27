@@ -7,6 +7,7 @@ from talleo_tip_bot_telegram.config import config
 
 
 class RPCException(Exception):
+
     def __init__(self, message):
         super(RPCException, self).__init__(message)
 

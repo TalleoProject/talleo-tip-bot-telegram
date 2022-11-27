@@ -3,6 +3,7 @@ from mongoengine import (Document, StringField, ReferenceField, LongField,
 
 
 class WalletAddressField(StringField):
+
     def __init__(self, **kwargs):
         max_length = 100
         regex = r'TA[a-zA-Z0-9]{95,}'
