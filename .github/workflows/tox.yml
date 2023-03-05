@@ -34,4 +34,4 @@ jobs:
          python3 -m pip install --upgrade pip
 
     - name: Run tox
-      run: tox -e py3${{ matrix.python-minor }}
+      run: tox -r -e py3${{ matrix.python-minor }}

@@ -1,3 +1,29 @@
 [build-system]
 requires = ["setuptools>=42", "wheel"]   # PEP 508 specifications.
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "talleo-tip-bot-telegram"
+authors = [
+    {name = "Mika Lindqvist", email = "postmaster@raasu.org"},
+]
+description = "Telegram tipbot for Talleo"
+readme = "README.md"
+keywords = ["telegram", "tipbot", "talleo"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "certifi>=2012.12.7",
+    "click",
+    "importlib-metadata>=0.12",
+    "mongoengine",
+    "munch",
+    "python-telegram-bot",
+    "pyyaml",
+    "requests",
+]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "talleo_tip_bot_telegram.__version__"}
