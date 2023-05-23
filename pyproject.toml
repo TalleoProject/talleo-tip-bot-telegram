@@ -21,7 +21,7 @@ dependencies = [
     "munch",
     "python-telegram-bot",
     "pyyaml",
-    "requests",
+    "requests>=2.31",
 ]
 dynamic = ["version"]
 

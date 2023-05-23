@@ -7,7 +7,7 @@ verify_ssl = true
 python_version = "3.8"
 
 [packages]
-requests = "*"
+requests = ">=2.31"
 python-telegram-bot = "*"
 mongoengine = "*"
 pyyaml = "*"
