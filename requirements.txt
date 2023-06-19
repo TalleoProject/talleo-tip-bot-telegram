@@ -8,7 +8,7 @@ h11==0.14.0
 httpcore==0.17.2
 httpx==0.24.1
 idna==3.4
-importlib-metadata==6.6.0
+importlib-metadata==6.7.0
 mongoengine==0.27.0
 munch==3.0.0
 pymongo==4.3.3
