@@ -15,7 +15,7 @@ platformdirs==3.6.0
 pluggy==1.0.0
 pycodestyle==2.10.0
 pyflakes==3.0.1
-pytest==7.3.2
+pytest==7.4.0
 pytest-cov==4.1.0
 setuptools==68.0.0
 toml==0.10.2
