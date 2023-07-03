@@ -10,7 +10,7 @@ mccabe==0.7.0
 packaging==23.1
 pbr==5.11.1
 pip==23.1.2
-pipenv==2023.7.1
+pipenv==2023.7.3
 platformdirs==3.8.0
 pluggy==1.2.0
 pycodestyle==2.10.0
