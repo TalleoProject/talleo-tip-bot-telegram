@@ -18,7 +18,7 @@ yapf==0.40.1
 zipp==3.16.0
 anyio==3.7.1
 charset-normalizer==3.2.0
-click==8.1.4
+click==8.1.5
 dnspython==2.3.0
 exceptiongroup==1.1.2
 h11==0.14.0
