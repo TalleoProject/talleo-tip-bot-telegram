@@ -9,7 +9,7 @@ pip==23.2.1
 pipenv==2023.7.23
 platformdirs==3.9.1
 pycodestyle==2.10.0
-pyflakes==3.0.1
+pyflakes==3.1.0
 setuptools==68.0.0
 tomli==2.0.1
 virtualenv==20.24.1
