@@ -7,7 +7,7 @@ mccabe==0.7.0
 pbr==5.11.1
 pip==23.2.1
 pipenv==2023.7.23
-platformdirs==3.9.1
+platformdirs==3.10.0
 pycodestyle==2.10.0
 pyflakes==3.0.1
 setuptools==68.0.0
