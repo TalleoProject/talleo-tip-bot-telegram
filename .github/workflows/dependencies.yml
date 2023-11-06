@@ -27,7 +27,7 @@ jobs:
         pip install pipenv
 
     - name: Run auto dependency update
-      uses: emZubair/dependencies-autoupdate@v1.2
+      uses: mtl1979/dependencies-autoupdate@v1.2.3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         pr-branch: "master"
