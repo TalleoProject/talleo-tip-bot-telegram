@@ -1,4 +1,4 @@
-certifi==2023.7.22
+certifi==2023.11.17
 distlib==0.3.7
 filelock==3.13.1
 flake8==6.1.0
@@ -6,7 +6,7 @@ importlib-metadata==6.8.0
 mccabe==0.7.0
 pbr==6.0.0
 pip==23.3.1
-pipenv==2023.10.24
+pipenv==2023.11.15
 platformdirs==3.11.0
 pycodestyle==2.11.1
 pyflakes==3.1.0
