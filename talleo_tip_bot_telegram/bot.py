@@ -4,7 +4,7 @@ import mongoengine
 from mongoengine.errors import ValidationError
 
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, CallbackContext, JobQueue
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackContext
 from telegram.ext import PrefixHandler
 
 from talleo_tip_bot_telegram import models, store
@@ -24,12 +24,11 @@ bot_help_tip = f"Give {TALLEO_REPR} to a user from your balance."
 bot_help_optimize = "Optimize wallet."
 bot_help_outputs = "Get number of optimizable and unspent outputs."
 
-updater = Updater(token=config.telegram.token, use_context=True)
-dispatcher = updater.dispatcher
+application = ApplicationBuilder().token(config.telegram.token).build()
 
 
-def commands(update: Update, context: CallbackContext):
-    context.bot.send_message(
+async def commands(update: Update, context: CallbackContext):
+    await context.bot.send_message(
         chat_id=update.message.chat_id,
         text='Talleo Telegram Tip Bot commands\n\n'
         '/help - Show available commands\n'
@@ -43,46 +42,46 @@ def commands(update: Update, context: CallbackContext):
         f'/outputs - {bot_help_outputs}')
 
 
-def info(update: Update, context: CallbackContext):
+async def info(update: Update, context: CallbackContext):
     username = update.message.from_user.username
     if update.effective_chat is None:
         _chat_type = "private"
     else:
         _chat_type = update.effective_chat.type
     if _chat_type != "private":
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Wallet information is only available in private chat')
     elif username is None:
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Please set a Telegram username in your profile settings!')
     else:
         user = store.register_user(username)
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id, text='Account Info\n\n'
             f'Deposit Address: {user.balance_wallet_address}\n\n'
             f'Registered Wallet: {user.user_wallet_address}')
 
 
-def balance(update: Update, context: CallbackContext):
+async def balance(update: Update, context: CallbackContext):
     username = update.message.from_user.username
     if update.effective_chat is None:
         _chat_type = "private"
     else:
         _chat_type = update.effective_chat.type
     if _chat_type != "private":
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Wallet balance is only available in private chat')
     elif username is None:
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Please set a Telegram username in your profile settings!')
     else:
         user: models.User = models.User.objects(user_id=username).first()
         wallet = store.get_user_wallet(user.user_id)
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id, text='Your balance\n\n'
             f'Available: {wallet.actual_balance / TALLEO_DIGITS:.2f} '
             f'{TALLEO_REPR}\n'
@@ -90,7 +89,7 @@ def balance(update: Update, context: CallbackContext):
             f'{TALLEO_REPR}\n')
 
 
-def register(update: Update, context: CallbackContext):
+async def register(update: Update, context: CallbackContext):
     username = update.message.from_user.username
     wallet_address = context.args[0]
     if update.effective_chat is None:
@@ -98,11 +97,11 @@ def register(update: Update, context: CallbackContext):
     else:
         _chat_type = update.effective_chat.type
     if _chat_type != "private":
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Registering is only available in private chat')
     elif username is None:
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Please set a Telegram username in your profile settings!')
     else:
@@ -114,11 +113,11 @@ def register(update: Update, context: CallbackContext):
                 existing_user = store.register_user(existing_user.user_id,
                                                     user_wallet=wallet_address)
             except ValidationError:
-                context.bot.send_message(chat_id=update.message.chat_id,
-                                         text='Invalid wallet address!')
+                await context.bot.send_message(chat_id=update.message.chat_id,
+                                               text='Invalid wallet address!')
                 return
             if prev_address:
-                context.bot.send_message(
+                await context.bot.send_message(
                     chat_id=update.message.chat_id,
                     text='Your withdrawal address has been changed from:\n'
                     f'{prev_address}\n to\n '
@@ -129,18 +128,18 @@ def register(update: Update, context: CallbackContext):
             user = (existing_user or
                     store.register_user(username, user_wallet=wallet_address))
         except ValidationError:
-            context.bot.send_message(chat_id=update.message.chat_id,
-                                     text='Invalid wallet address!')
+            await context.bot.send_message(chat_id=update.message.chat_id,
+                                           text='Invalid wallet address!')
             return
 
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id, text='You have been registered.\n'
             'You can send your deposits to '
             f'{user.balance_wallet_address} and your '
             f'balance will be available once confirmed.')
 
 
-def withdraw(update: Update, context: CallbackContext):
+async def withdraw(update: Update, context: CallbackContext):
     username = update.message.from_user.username
     amount = float(context.args[0])
     if update.effective_chat is None:
@@ -148,11 +147,11 @@ def withdraw(update: Update, context: CallbackContext):
     else:
         _chat_type = update.effective_chat.type
     if _chat_type != "private":
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Withdrawing is only available in private chat')
     elif username is None:
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Please set a Telegram username in your profile settings!')
     else:
@@ -160,7 +159,7 @@ def withdraw(update: Update, context: CallbackContext):
         real_amount = int(amount * TALLEO_DIGITS)
 
         if not user.user_wallet_address:
-            context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=update.message.chat_id,
                 text='You do not have a withdrawal address, please use '
                 '"register <wallet_address>" to register.')
@@ -170,7 +169,7 @@ def withdraw(update: Update, context: CallbackContext):
             wallet_address=user.balance_wallet_address).first()
 
         if real_amount + config.tx_fee >= user_balance_wallet.actual_balance:
-            context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=update.message.chat_id,
                 text='Insufficient balance to withdraw '
                 f'{real_amount / TALLEO_DIGITS:.2f} '
@@ -178,14 +177,14 @@ def withdraw(update: Update, context: CallbackContext):
             return
 
         if real_amount > config.max_tx_amount:
-            context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=update.message.chat_id,
                 text='Transactions cannot be bigger than '
                 f'{config.max_tx_amount / TALLEO_DIGITS:.2f} '
                 f'{TALLEO_REPR}')
             return
         elif real_amount < config.min_tx_amount:
-            context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=update.message.chat_id,
                 text='Transactions cannot be lower than '
                 f'{config.min_tx_amount / TALLEO_DIGITS:.2f} '
@@ -193,19 +192,19 @@ def withdraw(update: Update, context: CallbackContext):
             return
 
         withdrawal = store.withdraw(user, real_amount)
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text=f'You have withdrawn {real_amount / TALLEO_DIGITS:.2f} '
             f'{TALLEO_REPR}.\n'
             f'Transaction hash: {withdrawal.tx_hash}')
 
 
-def transfer(update: Update, context: CallbackContext):
+async def transfer(update: Update, context: CallbackContext):
     username = update.message.from_user.username
     recipient = context.args[0]
     amount = float(context.args[1])
     if username is None:
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Please set a Telegram username in your profile settings!')
     else:
@@ -217,8 +216,8 @@ def transfer(update: Update, context: CallbackContext):
                 user_to = models.Wallet(wallet_address=recipient)
                 user_to.save()
             except ValidationError:
-                context.bot.send_message(chat_id=update.message.chat_id,
-                                         text='Invalid wallet address!')
+                await context.bot.send_message(chat_id=update.message.chat_id,
+                                               text='Invalid wallet address!')
                 return
 
         real_amount = int(amount * TALLEO_DIGITS)
@@ -226,7 +225,7 @@ def transfer(update: Update, context: CallbackContext):
             wallet_address=user_from.balance_wallet_address).first()
 
         if real_amount + config.tx_fee >= user_from_wallet.actual_balance:
-            context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=update.message.chat_id,
                 text=f'Insufficient balance to send transfer of '
                 f'{real_amount / TALLEO_DIGITS:.2f} '
@@ -234,14 +233,14 @@ def transfer(update: Update, context: CallbackContext):
             return
 
         if real_amount > config.max_tx_amount:
-            context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=update.message.chat_id,
                 text=f'Transactions cannot be bigger than '
                 f'{config.max_tx_amount / TALLEO_DIGITS:.2f} '
                 f'{TALLEO_REPR}.')
             return
         elif real_amount < config.min_tx_amount:
-            context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=update.message.chat_id,
                 text=f'Transactions cannot be smaller than '
                 f'{config.min_tx_amount / TALLEO_DIGITS:.2f} '
@@ -250,7 +249,7 @@ def transfer(update: Update, context: CallbackContext):
 
         transfer = store.send(user_from, user_to, real_amount)
 
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text=f'Transfer of {real_amount / TALLEO_DIGITS:.2f} '
             f'{TALLEO_REPR} '
@@ -258,20 +257,20 @@ def transfer(update: Update, context: CallbackContext):
             f'Transaction hash: {transfer.tx_hash}')
 
 
-def tip(update: Update, context: CallbackContext):
+async def tip(update: Update, context: CallbackContext):
     username = update.message.from_user.username
     recipient = context.args[0]
     amount = float(context.args[1])
     if username is None:
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Please set a Telegram username in your profile settings!')
     else:
         if recipient == f'@{config.telegram.username}':
-            context.bot.send_message(chat_id=update.message.chat_id,
-                                     text='HODL!')
+            await context.bot.send_message(chat_id=update.message.chat_id,
+                                           text='HODL!')
         elif recipient == f'@{username}':
-            context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=update.message.chat_id,
                 text='Tipping oneself will just waste your balance!')
         elif "@" in recipient:
@@ -285,7 +284,7 @@ def tip(update: Update, context: CallbackContext):
                 wallet_address=user_from.balance_wallet_address).first()
 
             if real_amount + config.tx_fee >= user_from_wallet.actual_balance:
-                context.bot.send_message(
+                await context.bot.send_message(
                     chat_id=update.message.chat_id,
                     text=f'Insufficient balance to send tip of '
                     f'{real_amount / TALLEO_DIGITS:.2f} '
@@ -293,14 +292,14 @@ def tip(update: Update, context: CallbackContext):
                 return
 
             if real_amount > config.max_tx_amount:
-                context.bot.send_message(
+                await context.bot.send_message(
                     chat_id=update.message.chat_id,
                     text=f'Transactions cannot be bigger than '
                     f'{config.max_tx_amount / TALLEO_DIGITS:.2f} '
                     f'{TALLEO_REPR}.')
                 return
             elif real_amount < config.min_tx_amount:
-                context.bot.send_message(
+                await context.bot.send_message(
                     chat_id=update.message.chat_id,
                     text=f'Transactions cannot be smaller than '
                     f'{config.min_tx_amount / TALLEO_DIGITS:.2f} '
@@ -309,29 +308,29 @@ def tip(update: Update, context: CallbackContext):
 
             tip = store.send_tip(user_from, user_to, real_amount)
 
-            context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=update.message.chat_id,
                 text=f'Tip of {real_amount / TALLEO_DIGITS:.2f} '
                 f'{TALLEO_REPR} '
                 f'was sent to @{recipient}\n'
                 f'Transaction hash: {tip.tx_hash}')
         else:
-            context.bot.send_message(chat_id=update.message.chat_id,
-                                     text='Error: Invalid username!')
+            await context.bot.send_message(chat_id=update.message.chat_id,
+                                           text='Error: Invalid username!')
 
 
-def outputs(update: Update, context: CallbackContext):
+async def outputs(update: Update, context: CallbackContext):
     username = update.message.from_user.username
     if update.effective_chat is None:
         _chat_type = "private"
     else:
         _chat_type = update.effective_chat.type
     if _chat_type != "private":
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Wallet output information is only available in private chat')
     elif username is None:
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Please set a Telegram username in your profile settings!')
     else:
@@ -344,24 +343,24 @@ def outputs(update: Update, context: CallbackContext):
 
         estimate = store.estimate_fusion(user, threshold)
 
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text=f'Optimizable outputs: {estimate.fusion_ready_count}\n'
             f'Unspent outputs: {estimate.total_count}')
 
 
-def optimize(update: Update, context: CallbackContext):
+async def optimize(update: Update, context: CallbackContext):
     username = update.message.from_user.username
     if update.effective_chat is None:
         _chat_type = "private"
     else:
         _chat_type = update.effective_chat.type
     if _chat_type != "private":
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Wallet optimizing is only available in private chat')
     elif username is None:
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Please set a Telegram username in your profile settings!')
     else:
@@ -375,13 +374,13 @@ def optimize(update: Update, context: CallbackContext):
         estimate = store.estimate_fusion(user, threshold)
 
         if estimate['fusion_ready_count'] == 0:
-            context.bot.send_message(chat_id=update.message.chat_id,
-                                     text='No optimizable outputs!')
+            await context.bot.send_message(chat_id=update.message.chat_id,
+                                           text='No optimizable outputs!')
             return
 
         optimize = store.send_fusion(user, threshold)
 
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.message.chat_id, text='Fusion transaction sent.\n'
             f'Transaction hash: {optimize.tx_hash}')
 
@@ -390,9 +389,9 @@ def update_balance_wallets(context: CallbackContext):
     store.update_balances()
 
 
-def handle_errors(update: Update, context: CallbackContext):
-    context.bot.send_message(chat_id=update.message.chat_id,
-                             text=f'Error occured: {context.error}')
+async def handle_errors(update: Update, context: CallbackContext):
+    await context.bot.send_message(chat_id=update.message.chat_id,
+                                   text=f'Error occured: {context.error}')
 
 
 @click.command()
@@ -402,55 +401,26 @@ def main():
                         username=config.database.user,
                         password=config.database.password)
 
-    start_handler = CommandHandler('start', commands)
-    dispatcher.add_handler(start_handler)
+    application.add_handler(CommandHandler('help', help))
+    application.add_handler(CommandHandler('register', register))
+    application.add_handler(CommandHandler('info', info))
+    application.add_handler(CommandHandler('balance', balance))
+    application.add_handler(PrefixHandler(COMMAND_PREFIX, 'balance', balance))
+    application.add_handler(CommandHandler('withdraw', withdraw))
+    application.add_handler(CommandHandler('transfer', transfer))
+    application.add_handler(PrefixHandler(COMMAND_PREFIX, 'transfer',
+                                          transfer))
+    application.add_handler(CommandHandler('tip', tip))
+    application.add_handler(PrefixHandler(COMMAND_PREFIX, 'tip', tip))
+    application.add_handler(CommandHandler('outputs', outputs))
+    application.add_handler(CommandHandler('optimize', optimize))
+    application.add_error_handler(handle_errors)
 
-    help_handler = CommandHandler('help', commands)
-    dispatcher.add_handler(help_handler)
-
-    register_handler = CommandHandler('register', register)
-    dispatcher.add_handler(register_handler)
-
-    info_handler = CommandHandler('info', info)
-    dispatcher.add_handler(info_handler)
-
-    balance_handler = CommandHandler('balance', balance)
-    dispatcher.add_handler(balance_handler)
-
-    balance_prefix_handler = PrefixHandler(COMMAND_PREFIX, 'balance', balance)
-    dispatcher.add_handler(balance_prefix_handler)
-
-    withdraw_handler = CommandHandler('withdraw', withdraw)
-    dispatcher.add_handler(withdraw_handler)
-
-    transfer_handler = CommandHandler('transfer', transfer)
-    dispatcher.add_handler(transfer_handler)
-
-    transfer_prefix_handler = PrefixHandler(COMMAND_PREFIX, 'transfer',
-                                            transfer)
-    dispatcher.add_handler(transfer_prefix_handler)
-
-    tip_handler = CommandHandler('tip', tip)
-    dispatcher.add_handler(tip_handler)
-
-    tip_prefix_handler = PrefixHandler(COMMAND_PREFIX, 'tip', tip)
-    dispatcher.add_handler(tip_prefix_handler)
-
-    outputs_handler = CommandHandler('outputs', outputs)
-    dispatcher.add_handler(outputs_handler)
-
-    optimize_handler = CommandHandler('optimize', optimize)
-    dispatcher.add_handler(optimize_handler)
-
-    dispatcher.add_error_handler(handle_errors)
-
-    jobqueue = JobQueue()
-    jobqueue.set_dispatcher(dispatcher)
+    jobqueue = application.job_queue
     jobqueue.run_repeating(update_balance_wallets,
                            config.wallet_balance_update_interval)
-    jobqueue.start()
 
-    updater.start_polling()
+    application.run_polling()
 
 
 if __name__ == '__main__':
