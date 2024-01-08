@@ -31,4 +31,4 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         pr-branch: "master"
-        update-command: "'pipenv update && tox -e py38'"
+        update-command: "'pipenv --python `which python3` update && tox -e py38'"
