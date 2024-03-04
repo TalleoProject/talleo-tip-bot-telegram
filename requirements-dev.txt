@@ -24,7 +24,7 @@ h11==0.14.0
 httpcore==1.0.4
 httpx==0.26.0
 idna==3.6
-mongoengine==0.27.0
+mongoengine==0.28.0
 munch==4.0.0
 pymongo==4.6.2
 python-telegram-bot==20.8

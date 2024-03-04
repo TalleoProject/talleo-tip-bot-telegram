@@ -197,12 +197,12 @@
         },
         "mongoengine": {
             "hashes": [
-                "sha256:8f38df7834dc4b192d89f2668dcf3091748d12f74d55648ce77b919167a4a49b",
-                "sha256:c3523b8f886052f3deb200b3218bcc13e4b781661e3bea38587cc936c80ea358"
+                "sha256:34f28f34295fe095037c0219e528e72745d405d998d96773e8b1286694a2d38d",
+                "sha256:d4eebe5fd271a6f1bacda8806204800fe1872582d0852c561a10f63e9ff31666"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.7'",
-            "version": "==0.27.0"
+            "version": "==0.28.0"
         },
         "munch": {
             "hashes": [
