@@ -148,11 +148,11 @@
         },
         "exceptiongroup": {
             "hashes": [
-                "sha256:4bfd3996ac73b41e9b9628b04e079f193850720ea5945fc96a08633c66912f14",
-                "sha256:91f5c769735f051a4290d52edd0858999b57e5876e9f85937691bd4c9fa3ed68"
+                "sha256:5258b9ed329c5bbdd31a309f53cbfb0b155341807f6ff7606a1e801a891b29ad",
+                "sha256:a4785e48b045528f5bfe627b6ad554ff32def154f42372786903b7abcfe1aa16"
             ],
             "markers": "python_version < '3.11'",
-            "version": "==1.2.0"
+            "version": "==1.2.1"
         },
         "h11": {
             "hashes": [
@@ -303,12 +303,12 @@
         },
         "python-telegram-bot": {
             "hashes": [
-                "sha256:72e27445633a6339eacd2a9ebecec1eeb44b627056f84c2c2b907b448860cb62",
-                "sha256:e42d5cfec69d64fd921a41ff56215f92a48b8ddb5500235798c2bd3d9eb7242e"
+                "sha256:5fd21710902270f5946c6a484918227b361b8119e1dadae6b3dd7fcee3b1a74e",
+                "sha256:dded93d733585a37b382fd5e088faffc37c3ae6d2bd4052d105d9a40f8a0152a"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==21.1"
+            "version": "==21.1.1"
         },
         "pyyaml": {
             "hashes": [
@@ -531,11 +531,11 @@
         },
         "virtualenv": {
             "hashes": [
-                "sha256:961c026ac520bac5f69acb8ea063e8a4f071bcc9457b9c1f28f6b085c511583a",
-                "sha256:e08e13ecdca7a0bd53798f356d5831434afa5b07b93f0abdf0797b7a06ffe197"
+                "sha256:7bb554bbdfeaacc3349fa614ea5bff6ac300fc7c335e9facf3a3bcfc703f45be",
+                "sha256:8aac4332f2ea6ef519c648d0bc48a5b1d324994753519919bddbb1aff25a104e"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==20.25.1"
+            "version": "==20.25.3"
         },
         "yapf": {
             "hashes": [
