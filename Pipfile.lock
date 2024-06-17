@@ -407,20 +407,20 @@
         },
         "filelock": {
             "hashes": [
-                "sha256:43339835842f110ca7ae60f1e1c160714c5a6afd15a2873419ab185334975c0f",
-                "sha256:6ea72da3be9b8c82afd3edcf99f2fffbb5076335a5ae4d03248bb5b6c3eae78a"
+                "sha256:58a2549afdf9e02e10720eaa4d4470f56386d7a6f72edd7d0596337af8ed7ad8",
+                "sha256:71b3102950e91dfc1bb4209b64be4dc8854f40e5f534428d8684f953ac847fac"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==3.14.0"
+            "version": "==3.15.1"
         },
         "flake8": {
             "hashes": [
-                "sha256:33f96621059e65eec474169085dc92bf26e7b2d47366b70be2f67ab80dc25132",
-                "sha256:a6dfbb75e03252917f2473ea9653f7cd799c3064e54d4c8140044c5c065f53c3"
+                "sha256:2e416edcc62471a64cea09353f4e7bdba32aeb079b6e360554c659a122b1bc6a",
+                "sha256:48a07b626b55236e0fb4784ee69a465fbf59d79eec1f5b4785c3d3bc57d17aa5"
             ],
             "index": "pypi",
             "markers": "python_full_version >= '3.8.1'",
-            "version": "==7.0.0"
+            "version": "==7.1.0"
         },
         "importlib-metadata": {
             "hashes": [
@@ -459,12 +459,12 @@
         },
         "pipenv": {
             "hashes": [
-                "sha256:be6f8e094c259fa6f2feb6b7871cf571b16d10ae67afa671ddd6d89173e5a55a",
-                "sha256:e5ed842dc69b601da6fe26aee8677da608ec9df0f3f98c25442fdade5f1114ac"
+                "sha256:5360835c613837423a99b8c94952b139b777b3eaabb42cb9edb34556245b4c25",
+                "sha256:ae5a83fa5b66065cebd2bd8f73f0b281b3bd202a13d58cc644f0b9765128c990"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==2024.0.0"
+            "version": "==2024.0.1"
         },
         "platformdirs": {
             "hashes": [
@@ -476,11 +476,11 @@
         },
         "pycodestyle": {
             "hashes": [
-                "sha256:41ba0e7afc9752dfb53ced5489e89f8186be00e599e712660695b7a75ff2663f",
-                "sha256:44fe31000b2d866f2e41841b18528a505fbd7fef9017b04eff4e2648a0fadc67"
+                "sha256:442f950141b4f43df752dd303511ffded3a04c2b6fb7f65980574f0c31e6e79c",
+                "sha256:949a39f6b86c3e1515ba1787c2022131d165a8ad271b11370a8819aa070269e4"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==2.11.1"
+            "version": "==2.12.0"
         },
         "pyflakes": {
             "hashes": [
