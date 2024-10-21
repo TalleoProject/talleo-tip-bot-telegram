@@ -18,11 +18,11 @@
     "default": {
         "anyio": {
             "hashes": [
-                "sha256:6caec6b1391f6f6d7b2ef2258d2902d36753149f67478f7df4be8e54d03a8f54",
-                "sha256:f72a7bb3dd0752b3bd8b17a844a019d7fbf6ae218c588f4f9ba1b2f600b12347"
+                "sha256:23009af4ed04ce05991845451e11ef02fc7c5ed29179ac9a420e5ad0ac7ddc5b",
+                "sha256:c011ee36bc1e8ba40e5a81cb9df91925c218fe9b778554e0b56a21e1b5d4716f"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==4.6.2"
+            "version": "==4.5.2"
         },
         "certifi": {
             "hashes": [
@@ -516,12 +516,12 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:35ab7fd3bcd95e6b7fd704e4a1539513edad446c097797f2985e0e4b960772f2",
-                "sha256:d59a21b17a275fb872a9c3dae73963160ae079f1049ed956880cd7c09b120538"
+                "sha256:753bb6ebf1f465a1912e19ed1d41f403a79173a9acf66a42e7e6aec45c3c16ec",
+                "sha256:a7fcb66f68b4d9e8e66b42f9876150a3371558f98fa32222ffaa5bced76406f8"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==75.1.0"
+            "version": "==75.2.0"
         },
         "tomli": {
             "hashes": [
@@ -533,11 +533,11 @@
         },
         "virtualenv": {
             "hashes": [
-                "sha256:280aede09a2a5c317e409a00102e7077c6432c5a38f0ef938e643805a7ad2c48",
-                "sha256:7345cc5b25405607a624d8418154577459c3e0277f5466dd79c49d5e492995f2"
+                "sha256:2ca56a68ed615b8fe4326d11a0dca5dfbe8fd68510fb6c6349163bed3c15f2b2",
+                "sha256:44a72c29cceb0ee08f300b314848c86e57bf8d1f13107a5e671fb9274138d655"
             ],
-            "markers": "python_version >= '3.7'",
-            "version": "==20.26.6"
+            "markers": "python_version >= '3.8'",
+            "version": "==20.27.0"
         },
         "yapf": {
             "hashes": [
