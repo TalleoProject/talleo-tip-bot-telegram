@@ -6,8 +6,8 @@ importlib-metadata==8.5.0
 mccabe==0.7.0
 packaging==24.1
 pbr==6.1.0
-pip==24.2
-pipenv==2024.1.0
+pip==24.3.1
+pipenv==2024.2.0
 platformdirs==4.3.6
 pycodestyle==2.12.1
 pyflakes==3.2.0
