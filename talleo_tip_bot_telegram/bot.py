@@ -91,6 +91,10 @@ async def balance(update: Update, context: CallbackContext):
 
 async def register(update: Update, context: CallbackContext):
     username = update.message.from_user.username
+    if len(context.args) != 1:
+        await context.bot.send_message(chat_id=update.message.chat.id,
+                                       text='Expected wallet address')
+        return
     wallet_address = context.args[0]
     if update.effective_chat is None:
         _chat_type = "private"
@@ -141,6 +145,10 @@ async def register(update: Update, context: CallbackContext):
 
 async def withdraw(update: Update, context: CallbackContext):
     username = update.message.from_user.username
+    if len(context.args) != 1:
+        await context.bot.send_message(chat_id=update.message.chat.id,
+                                       text='Expected amount')
+        return
     amount = float(context.args[0])
     if update.effective_chat is None:
         _chat_type = "private"
@@ -201,6 +209,10 @@ async def withdraw(update: Update, context: CallbackContext):
 
 async def transfer(update: Update, context: CallbackContext):
     username = update.message.from_user.username
+    if len(context.args) != 2:
+        await context.bot.send_message(chat_id=update.message.chat.id,
+                                       text='Expected recipient and amount')
+        return
     recipient = context.args[0]
     amount = float(context.args[1])
     if username is None:
@@ -259,6 +271,10 @@ async def transfer(update: Update, context: CallbackContext):
 
 async def tip(update: Update, context: CallbackContext):
     username = update.message.from_user.username
+    if len(context.args) != 2:
+        await context.bot.send_message(chat_id=update.message.chat.id,
+                                       text='Expected recipient and amount')
+        return
     recipient = context.args[0]
     amount = float(context.args[1])
     if username is None:
