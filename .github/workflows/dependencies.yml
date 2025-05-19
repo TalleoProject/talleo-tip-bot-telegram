@@ -17,7 +17,7 @@ jobs:
 
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.8'
+        python-version: '3.9'
 
     - name: Install packages
       run: |
@@ -31,4 +31,4 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         pr-branch: "master"
-        update-command: "'pipenv --python `which python3` update && tox -e py38'"
+        update-command: "'pipenv --python `which python3` update && tox -e py39'"

@@ -8,10 +8,6 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - name: Ubuntu 22.04 - Python 3.8
-            os: ubuntu-22.04
-            python-minor: 8
-
           - name: Ubuntu 22.04 - Python 3.9
             os: ubuntu-22.04
             python-minor: 9
