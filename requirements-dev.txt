@@ -27,7 +27,7 @@ idna==3.10
 importlib-metadata==8.7.0
 mongoengine==0.29.1
 munch==4.0.0
-pymongo==4.13.1
+pymongo==4.13.2
 python-telegram-bot==22.1
 pyyaml==6.0.2
 requests==2.32.4
