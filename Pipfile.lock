@@ -280,12 +280,12 @@
         },
         "python-telegram-bot": {
             "hashes": [
-                "sha256:71afd091fde9037ac44728c2768eb958682140dcc350900a191da0e9cef319d3",
-                "sha256:b6c7fc1f3635cef6aff0c431827407cafde183e7e1992060edeacc2bf08d23d8"
+                "sha256:20dc096673961b849c041814d9618a3c7036dcca73015e576293600234457482",
+                "sha256:234b933f960c534ffb2679f4d1e937bae24b4ac1c4767b6b03754bd38640cec0"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.9'",
-            "version": "==22.1"
+            "version": "==22.2"
         },
         "pyyaml": {
             "hashes": [
